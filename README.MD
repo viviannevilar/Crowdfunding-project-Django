@@ -29,4 +29,35 @@ $ python3 manage.py startapp projects
 
 $ python3 manage.py startapp users
 
-Then followed the instructions in "Crowdfunding Users.pdf" plus part of the admin.py  changes from SheCodesNews
+
+### Git
+
+- Created the .gitignore file
+Then
+
+$ git init .
+$ git add .
+
+$ git commit -am "Configured Vagrant and setup hello world script"
+
+Then went on github desktop and added repository (add from existing) and published it
+
+From now on can use :
+
+$ git push origin
+
+
+### Apps
+
+added to settings.py
+
+    'rest_framework',
+    'projects.apps.ProjectsConfig', 
+    'users.apps.UsersConfig',
+
+
+Added projects, categories, users models
+
+### Create superuser
+
+python3 manage.py creesuperuser
