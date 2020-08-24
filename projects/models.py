@@ -18,7 +18,7 @@ class Project(models.Model):
     goal = models.IntegerField()
     image = models.URLField()
     is_open = models.BooleanField() 
-    date_created = models.DateTimeField() 
+    date_created = models.DateTimeField(auto_now_add=True) 
     pub_date =  models.DateTimeField(null=True,blank=True)
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
