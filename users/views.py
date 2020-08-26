@@ -1,16 +1,20 @@
 from rest_framework import generics, permissions, mixins, status
-from .models import CustomUser
 from .serialisers import CustomUserSerialiser
-from crowdfunding.permissions import IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
-class CustomUserList(generics.ListCreateAPIView):
-    queryset = CustomUser.objects.all()
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
     serializer_class = CustomUserSerialiser
-
 
 class UserRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
-    queryset = CustomUser.objects.all()
+    queryset = User.objects.all()
     serializer_class = CustomUserSerialiser
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-    #format = None
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
+
+class UserCreate(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = CustomUserSerialiser
+    #permission_classes = (AllowAny,)

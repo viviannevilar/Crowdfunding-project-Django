@@ -5,6 +5,46 @@ This is the version I created myself from scratch.
 This is not the version created in class following Hayley.
 
 
+## Schema
+https://dbdiagram.io/d/5f3b46bf39081a20ae94e5c7
+
+## TO DO
+
+- in /users/, for post (create user), want there to be 2 passwords
+Apparently this is done in the front end
+https://stackoverflow.com/questions/43031323/how-to-create-a-new-user-with-django-rest-framework-and-custom-user-model
+
+- want the is_open in projects to be set to true, and then to be
+  automatically closed when the goal is reached or when the time set
+  is elapsed
+
+
+
+
+1. Create new profile
+- handle registration of new users
+- validate profile data
+
+2. Listing existing profiles
+- search for profiles
+- email and name
+
+3. View specific profiles
+- profile id
+
+4. Update profile of logged in user
+- change name, email and password
+
+5. Delete profile
+
+
+
+
+
+## Helpful links
+
+https://stackoverflow.com/questions/51920166/django-rest-framework-single-class-based-view-bound-to-multiple-urls
+
 
 ## STEPS
 
@@ -61,3 +101,28 @@ Added projects, categories, users models
 ### Create superuser
 
 python3 manage.py creesuperuser
+
+### Register projects and categories in admin
+
+admin.site.register(Project)
+admin.site.register(Category)
+
+
+
+### Checking out my project serialiser
+
+>>> from projects.serialisers import ProjectSerialiser
+>>> serialiser = ProjectSerialiser()
+>>> print(repr(serialiser))
+ProjectSerialiser():
+    id = IntegerField(label='ID', read_only=True)
+    title = CharField(max_length=200)
+    description = CharField(style={'base_template': 'textarea.html'})
+    goal = IntegerField()
+    image = URLField(max_length=200)
+    is_open = BooleanField()
+    date_created = DateTimeField()
+    pub_date = DateTimeField(allow_null=True, required=False)
+    owner = PrimaryKeyRelatedField(queryset=CustomUser.objects.all())
+    category = PrimaryKeyRelatedField(queryset=Category.objects.all(), required=False)
+>>> 

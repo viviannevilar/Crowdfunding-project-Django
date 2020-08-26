@@ -1,13 +1,14 @@
 # users/serializers.py
 from rest_framework import serializers 
-from .models import CustomUser
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 class CustomUserSerialiser(serializers.ModelSerializer):
     
     class Meta:
-        model = CustomUser
-        fields = ['username', 'email', 'password']
+        model = User
+        fields = ('username', 'email', 'password')
 
         # These fields are only editable (not displayed) and have to be a part of 'fields' tuple
         extra_kwargs = {'password': {'write_only': True, 'min_length': 4}}
@@ -17,4 +18,11 @@ class CustomUserSerialiser(serializers.ModelSerializer):
 
 
     # def create(self, validated_data):
-    #     return CustomUser.objects.create(**validated_data)
+    #     return User.objects.create(**validated_data)
+
+    # 
+    # def create(self, validated_data):
+    #     user = super(UserSerializer, self).create(validated_data)
+    #     user.set_password(validated_data['password'])
+    #     user.save()
+    #     return user
