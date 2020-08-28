@@ -9,12 +9,14 @@ class UserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = CustomUserSerialiser
 
+
 class UserRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = CustomUserSerialiser
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
+    lookup_field = 'username'
 
 class UserCreate(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = CustomUserSerialiser
-    #permission_classes = (AllowAny,)
+    #permission_classes = (permissions.AllowAny,)

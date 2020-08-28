@@ -18,6 +18,19 @@ https://stackoverflow.com/questions/43031323/how-to-create-a-new-user-with-djang
   automatically closed when the goal is reached or when the time set
   is elapsed
 
+- can update the project only if it is a draft
+
+- do I need to limit the number of projects I send in the categories
+  view (because I will only want to show maybe 4 for each category) or
+  is this a front end's problem?
+
+- users profile, user can see their own pledges (or can anybody see
+them?)
+- can people see a person's projects?
+
+
+- create a search hability
+
 
 
 
@@ -109,7 +122,7 @@ admin.site.register(Category)
 
 
 
-### Checking out my project serialiser
+### SHELL
 
 >>> from projects.serialisers import ProjectSerialiser
 >>> serialiser = ProjectSerialiser()
@@ -126,3 +139,66 @@ ProjectSerialiser():
     owner = PrimaryKeyRelatedField(queryset=CustomUser.objects.all())
     category = PrimaryKeyRelatedField(queryset=Category.objects.all(), required=False)
 >>> 
+
+---------------------------------------------------------------------
+
+>>> from projects.models import Project
+>>> from projects.serialisers import CategorySerialiser
+>>> from projects.models import Category
+>>> obj = Category.objects.filter(id=1)
+>>> print(obj)
+<QuerySet [<Category: Other>]>
+>>> obj = Category.objects.get(id=1)
+>>> obj.id
+1
+>>> obj.name
+'Other'
+>>> data = {
+...     "name": "delete",
+...     "description": "testing the shell"
+... }
+>>> new_item = CategorySerialiser(data = data)
+>>> new_item
+CategorySerialiser(data={'name': 'delete', 'description': 'testing the shell'}):
+    id = IntegerField(label='ID', read_only=True)
+    cat_projects = ProjectSerialiser(many=True, read_only=True):
+        id = IntegerField(label='ID', read_only=True)
+        owner = ReadOnlyField(source='owner.username')
+        date_created = ReadOnlyField()
+        title = CharField(max_length=200)
+        description = CharField(style={'base_template': 'textarea.html'})
+        goal = IntegerField()
+        image = URLField(max_length=200)
+        is_open = BooleanField()
+        pub_date = DateTimeField(allow_null=True, required=False)
+        category = PrimaryKeyRelatedField(queryset=Category.objects.all(), required=False)
+    name = CharField(max_length=15, validators=[<UniqueValidator(queryset=Category.objects.all())>])
+    description = CharField(style={'base_template': 'textarea.html'})
+>>> 
+
+
+--------------------------------------------------
+
+>>> from projects.models import Category
+>>> from projects.serialisers import CategorySerialiser
+>>> data = {
+...     "name": "delete",
+...     "description": "testing the shell"
+... }
+>>> new_item = CategorySerialiser(data=data)
+>>> new_item
+CategorySerialiser(data={'name': 'delete', 'description': 'testing the shell'}):
+    id = IntegerField(label='ID', read_only=True)
+    name = CharField(max_length=15, validators=[<UniqueValidator(queryset=Category.objects.all())>])
+    description = CharField(style={'base_template': 'textarea.html'})
+>>> new_item.initial_data
+{'name': 'delete', 'description': 'testing the shell'}
+>>> if new_item.is_valid():
+...     new_item.save()
+... else:
+...     print(new_item.errors)
+... 
+<Category: delete>
+>>> new_item.data
+{'id': 5, 'name': 'delete', 'description': 'testing the shell'}
+

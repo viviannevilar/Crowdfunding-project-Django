@@ -3,7 +3,7 @@ from .models import Project, Pledge, Category
 from .serialisers import (ProjectSerialiser, 
             ProjectDetailSerialiser,
             PledgeSerialiser,
-            CategorySerialiser
+            CategoryDetailSerialiser
             )
 from .permissions import IsOwnerOrReadOnly
 
@@ -23,10 +23,20 @@ class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectDetailSerialiser
 
-class PledgeList(generics.ListAPIView):
+class PledgeList(generics.ListCreateAPIView):
     queryset = Pledge.objects.all()
     serializer_class = PledgeSerialiser
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(supporter=self.request.user)
+
+class CategoryList(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategoryDetailSerialiser
+
 
 class CategoryDetail(generics.RetrieveAPIView):
     queryset = Category.objects.all()
-    serializer_class = CategorySerialiser
+    serializer_class = CategoryDetailSerialiser
+    lookup_field = 'name'

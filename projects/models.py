@@ -15,13 +15,15 @@ class Category(models.Model):
     class Meta:
         verbose_name_plural = "Categories"
 
+
+
 class Project(models.Model):
     title = models.CharField(max_length=200) 
     description = models.TextField()
     goal = models.IntegerField()
     image = models.URLField()
-    is_open = models.BooleanField() 
     date_created = models.DateTimeField(auto_now_add=True) 
+    duration = models.IntegerField()
     pub_date =  models.DateTimeField(null=True,blank=True)
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -34,6 +36,10 @@ class Project(models.Model):
         default='Other',
         related_name = 'cat_projects'
     )
+
+    #https://www.django-rest-framework.org/api-guide/fields/#serializermethodfield
+
+
 
 class Pledge(models.Model):
     amount = models.IntegerField()

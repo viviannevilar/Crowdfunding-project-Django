@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # my additions
     'rest_framework',
+    'rest_framework.authtoken',
     'projects.apps.ProjectsConfig', 
     'users.apps.UsersConfig',
 ]
@@ -125,8 +126,9 @@ STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': [ 
-#         'rest_framework.authentication.TokenAuthentication', 
-#         ]
-# }
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication'
+    ]
+}
