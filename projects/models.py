@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.utils.timezone import now
+from datetime import datetime, timedelta
 
 User = get_user_model()
 
@@ -36,6 +38,12 @@ class Project(models.Model):
         default='Other',
         related_name = 'cat_projects'
     )
+
+    @property
+    def is_open(self):
+        if self.pub_date is None:
+            return False
+        return (self.pub_date + timedelta(self.duration)) > now()
 
     # You can override the save method on your model to check and update the field before saving.
     # def save(self, *args, **kwargs):

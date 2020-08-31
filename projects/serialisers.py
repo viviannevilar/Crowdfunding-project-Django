@@ -8,20 +8,20 @@ class ProjectSerialiser(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     #owner = serializers.HyperlinkedRelatedField(read_only=True, view_name = 'id', lookup_field='id')
     date_created = serializers.ReadOnlyField()
-    is_open = serializers.SerializerMethodField()
+    is_open = serializers.ReadOnlyField()
+    # is_open = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
         fields = '__all__'
 
-    def get_is_open(self,obj):
-        if obj.pub_date is None:
-            return False
-        return (obj.pub_date + timedelta(obj.duration)) > now()
+    # def get_is_open(self,obj):
+    #     if obj.pub_date is None:
+    #         return False
+    #     return (obj.pub_date + timedelta(obj.duration)) > now()
 
 class PledgeSerialiser(serializers.ModelSerializer):
     supporter = serializers.ReadOnlyField(source='supporter.username')
-    #supporter = serializers.StringRelatedField()
     date_sent = serializers.ReadOnlyField()
     #project = serializers.ReadOnlyField()
     
@@ -30,20 +30,7 @@ class PledgeSerialiser(serializers.ModelSerializer):
         fields = '__all__'
 
  
-class PledgeUserSerialiser(serializers.ModelSerializer):
-    #supporter = serializers.ReadOnlyField(source='supporter.username')
-    date_sent = serializers.ReadOnlyField()
-     
-    class Meta:
-        model = Pledge
-        fields = '__all__'
 
-class ProjectUserSerialiser(serializers.ModelSerializer):
-    #supporter = serializers.ReadOnlyField(source='supporter.username')
-    
-    class Meta:
-        model = Project
-        exclude = ['owner']
 
 class ProjectDetailSerialiser(ProjectSerialiser):
     project_pledges = PledgeSerialiser(many=True, read_only=True)
@@ -92,4 +79,21 @@ class CategoryDetailSerialiser(CategorySerialiser):
     cat_projects = ProjectSerialiser(many=True, read_only=True)
     
 
- 
+
+
+class PledgeUserSerialiser(serializers.ModelSerializer):
+    """ used by the UserProfile view, to show info on a specific user """
+    #supporter = serializers.ReadOnlyField(source='supporter.username')
+    date_sent = serializers.ReadOnlyField()
+     
+    class Meta:
+        model = Pledge
+        fields = '__all__'
+
+class ProjectUserSerialiser(serializers.ModelSerializer):
+    """" used by the UserProfile view, to show info on a specific user """
+    #supporter = serializers.ReadOnlyField(source='supporter.username')
+    
+    class Meta:
+        model = Project
+        exclude = ['owner']
