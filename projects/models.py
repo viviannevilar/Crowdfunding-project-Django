@@ -37,6 +37,12 @@ class Project(models.Model):
         related_name = 'cat_projects'
     )
 
+    # You can override the save method on your model to check and update the field before saving.
+    # def save(self, *args, **kwargs):
+    #     if self.pledge >= self.target
+    #     self.complete=True
+    #     return super().save(*args, **kwargs)
+
     #https://www.django-rest-framework.org/api-guide/fields/#serializermethodfield
 
 
@@ -49,7 +55,7 @@ class Pledge(models.Model):
     project = models.ForeignKey(
         'Project',
         on_delete=models.CASCADE,
-        related_name='pledges'
+        related_name='project_pledges'
     )
     supporter = models.ForeignKey(
         User,

@@ -1,7 +1,10 @@
 # users/serializers.py
 from rest_framework import serializers 
 from django.contrib.auth import get_user_model
-from projects.serialisers import PledgeSerialiser
+from projects.serialisers import (
+    PledgeSerialiser,
+    PledgeUserSerialiser,
+    ProjectUserSerialiser)
 
 User = get_user_model()
 
@@ -29,15 +32,27 @@ class CustomUserSerialiser(serializers.ModelSerializer):
     #     user.save()
     #     return user
 
-class UserDisplaySerialiser(CustomUserSerialiser):
-    pledges = PledgeSerialiser(many=True, read_only=True)
-
-class UserProfileSerialiser(serializers.ModelSerializer):
-    pledges = PledgeSerialiser(many=True, read_only=True)
+class UserDisplaySerialiser(serializers.ModelSerializer):
+    supporter_pledges = PledgeSerialiser(many=True, read_only=True)
 
     class Meta:
         model = User
         fields = '__all__'
+        #lookup_field = 'username'
+
+class UserProfileSerialiser(serializers.ModelSerializer):
+    supporter_pledges = PledgeUserSerialiser(many=True, read_only=True)
+    owner_projects = ProjectUserSerialiser(many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = '__all__'
+        #lookup_field = 'username'
 
   
 
+
+#    def get_queryset(self):
+#         if self.request.user.is_superuser:
+#             return FooModel.objects.all()
+#         return FooModel.objects.filter(owner=self.request.user)
