@@ -30,6 +30,28 @@ class PledgeSerialiser(serializers.ModelSerializer):
         fields = '__all__'
 
  
+    # def create(self, validated_data):
+    #     """create a new pledge"""
+
+    #     supporter = validated_data['supporter.username']
+    #     amount = validated_data['amount']
+    #     comment = validated_data['comment']
+    #     anonymous = validated_data['anonymous']
+    #     project = validated_data['project']
+        
+    #     project_object = Project.objects.get(pk = project)
+    #     if project_object.is_open:
+    #         pledge = Pledge.object.create(
+    #             supporter = supporter,
+    #             amount = amount,
+    #             comment = comment,
+    #             anonymous = anonymous,
+    #             project = project
+    #         )
+    #     else:
+    #         raise serializers.ValidationError({'message': "Project is closed"})
+       
+
 
 
 class ProjectDetailSerialiser(ProjectSerialiser):

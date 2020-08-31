@@ -6,7 +6,8 @@ from .serialisers import (ProjectSerialiser,
             CategoryDetailSerialiser
             )
 from .permissions import IsOwnerOrReadOnly
-
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 class ProjectList(generics.ListCreateAPIView):
     """ url: projects/ """
@@ -30,41 +31,60 @@ class ProjectDetail(generics.RetrieveDestroyAPIView):
     #I want people to be able to close projects
     #and to publish them (ability to create drafts), ie, can only update a project if it has not been published
 
-class PledgeList(generics.ListCreateAPIView):
-    """ url: pledges/ """
-    queryset = Pledge.objects.all()
-    serializer_class = PledgeSerialiser
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def perform_create(self,serializer):
-        serializer.save(supporter=self.request.user)
+class PledgeList(APIView):
 
-    #need to update this. Do I want the is_open to be a property on the serialiser or better in the model? Could also check ben's suggestion to override the save method on the model to close it after a certain amount is reached.
-    # def perform_create(self, serializer):
-    #     if self.project.is_open == True:
-    #         serializer.save(supporter=self.request.user)
-    #         return Response(
-    #             serializer.data,
-    #              status=status.HTTP_201_CREATED
-    #         )
-    #     else:
-    #         return Response(error="This is project is closed", 
-    #         status = status.HTTP_403_FORBIDDEN)
+    def get(self, request):
+        pledges = Pledge.objects.all()
+        serializer = PledgeSerialiser(pledges, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = PledgeSerialiser(data = request.data)
+        if serializer.is_valid():
+            project_pk = request.data['project']
+            project_object = Project.objects.get(pk = project_pk)
+            print(project_object.is_open)
+            if project_object.is_open:
+                serializer.save(supporter=self.request.user)
+                return Response(
+                    serializer.data,
+                    status=status.HTTP_201_CREATED
+                )
+            return Response({"detail": "This project is closed"}, status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+#this was to do the same as the above using generic views, but it is not working (the error message isn't working, but it is performing correctly)
+# class PledgeList(generics.ListCreateAPIView):
+#     """ url: pledges/ """
+#     queryset = Pledge.objects.all()
+#     serializer_class = PledgeSerialiser
+#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+#     # def perform_create(self,serializer):
+#     #     serializer.save(supporter=self.request.user)
+
+#     #need to update this. Do I want the is_open to be a property on the serialiser or better in the model? Could also check ben's suggestion to override the save method on the model to close it after a certain amount is reached.
+#     def perform_create(self, serializer):
+#         project_pk = serializer.data['project']
+#         print(project_pk)
+#         project = Project.objects.get(pk = project_pk)
+#         print(project)
+        # print(project.is_open)
+        # if project.is_open:
+        #     serializer.save(supporter=self.request.user)
+        #     return Response(
+        #         serializer.data,
+        #          status=status.HTTP_201_CREATED
+        #     )
+        # return Response({"detail": "This project is closed"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-# def post(self, request):
-#         serializer = ProjectSerialiser(data = request.data)
-#         if serializer.is_valid():
-#             serializer.save(owner=request.user)
-#             return Response(
-#                 serializer.data,
-#                 status=status.HTTP_201_CREATED
-#             )
-#         return Response(
-#             serializer.errors,
-#             status = status.HTTP_400_BAD_REQUEST
-#         )
 
 class CategoryList(generics.ListAPIView):
     """ url: categories/ """
