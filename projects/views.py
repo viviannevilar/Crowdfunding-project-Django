@@ -36,17 +36,20 @@ class PledgeList(generics.ListCreateAPIView):
     serializer_class = PledgeSerialiser
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+    def perform_create(self,serializer):
+        serializer.save(supporter=self.request.user)
+
     #need to update this. Do I want the is_open to be a property on the serialiser or better in the model? Could also check ben's suggestion to override the save method on the model to close it after a certain amount is reached.
-    def perform_create(self, serializer):
-        if self.project.is_open == True:
-            serializer.save(supporter=self.request.user)
-            return Response(
-                serializer.data,
-                 status=status.HTTP_201_CREATED
-            )
-        else:
-            return Response(error="This is project is closed", 
-            status = status.HTTP_403_FORBIDDEN)
+    # def perform_create(self, serializer):
+    #     if self.project.is_open == True:
+    #         serializer.save(supporter=self.request.user)
+    #         return Response(
+    #             serializer.data,
+    #              status=status.HTTP_201_CREATED
+    #         )
+    #     else:
+    #         return Response(error="This is project is closed", 
+    #         status = status.HTTP_403_FORBIDDEN)
 
 
 

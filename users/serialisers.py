@@ -33,11 +33,11 @@ class CustomUserSerialiser(serializers.ModelSerializer):
     #     return user
 
 class UserDisplaySerialiser(serializers.ModelSerializer):
-    supporter_pledges = PledgeSerialiser(many=True, read_only=True)
+    owner_projects = ProjectUserSerialiser(many=True, read_only=True)
 
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ['username', 'date_joined', 'last_login', 'owner_projects'] 
         #lookup_field = 'username'
 
 class UserProfileSerialiser(serializers.ModelSerializer):
