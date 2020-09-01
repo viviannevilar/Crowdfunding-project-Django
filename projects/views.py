@@ -1,22 +1,32 @@
 from rest_framework import generics, permissions, mixins, status
-from .models import Project, Pledge, Category
+from .models import Project, Pledge, Category, Favourite
 from .serialisers import (ProjectSerialiser, 
             ProjectDetailSerialiser,
             PledgeSerialiser,
-            CategoryDetailSerialiser
+            CategoryDetailSerialiser,
+            FavouriteSerialiser
             )
 from .permissions import IsOwnerOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
+#from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter
+import django_filters
+from django_filters import rest_framework as filters
 
+#ordering is working, filters is not
 class ProjectList(generics.ListCreateAPIView):
     """ url: projects/ """
     queryset = Project.objects.all()
     serializer_class = ProjectSerialiser
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [OrderingFilter, filters.DjangoFilterBackend,]
+    ordering_fields = ['category', 'date_created']
+    filterset_fields = ['category', 'date_created']
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
 
 #need to update this so that can only see projects that are published, unless project owner
 class ProjectDetail(generics.RetrieveDestroyAPIView):
@@ -102,5 +112,77 @@ class CategoryDetail(generics.RetrieveAPIView):
     lookup_field = 'name'
 
 
+# class FavouriteView(APIView):
+
+#     permission_classes = [
+#         permissions.IsAuthenticatedOrReadOnly,
+#         IsOwnerOrReadOnly]
+
+#     def get_object(self, pk):
+#         try:
+#             return Project.objects.get(pk=pk)
+#         except Project.DoesNotExist:
+#             raise Http404
+        
+#     def get(self, request, pk):
+#         project = self.get_object(pk)
+#         serializer = ProjectDetailSerialiser(project)
+#         return Response(serializer.data)
+
+ 
+
+
+
+
+# class SnippetDetail(APIView):
+#     """
+#     Retrieve, update or delete a snippet instance.
+#     """
+#     def get_object(self, pk):
+#         try:
+#             return Snippet.objects.get(pk=pk)
+#         except Snippet.DoesNotExist:
+#             raise Http404
+
+#     def get(self, request, pk, format=None):
+#         snippet = self.get_object(pk)
+#         serializer = SnippetSerializer(snippet)
+#         return Response(serializer.data)
+
+#     def put(self, request, pk, format=None):
+#         snippet = self.get_object(pk)
+#         serializer = SnippetSerializer(snippet, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#     def delete(self, request, pk, format=None):
+#         snippet = self.get_object(pk)
+#         snippet.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+
+
+class FavouriteListView(generics.ListCreateAPIView):
+    """ url: favourites """
+    serializer_class = FavouriteSerialiser
+
+    def get_queryset(self):
+        """
+        This view should return a list of all favourites for the currently authenticated user.
+        """
+        user = self.request.user
+        return Favourite.objects.filter(owner=user)
+
+    # need to ensure someone doesnt favourite a project more than once. 
+
+    # Can either make a new favourite mean a removal of the favourite or just be able to remove a favourite with remove. But I like the "favourite again means remove" option
+
+
 
 # Search?
+
+

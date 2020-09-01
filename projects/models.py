@@ -37,6 +37,10 @@ class Project(models.Model):
         default='Other',
         related_name = 'cat_projects'
     )
+    favouriters = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name='favouriter_projects',
+        through='Favourite'
+        )
 
     @property
     def is_open(self):
@@ -65,7 +69,20 @@ class Pledge(models.Model):
         related_name='project_pledges'
     )
     supporter = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete = models.CASCADE,
         related_name = 'supporter_pledges'
     )
+
+class Favourite(models.Model):
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete = models.CASCADE,
+        related_name = 'owner_favourites',
+    )
+    project = models.ForeignKey(
+        Project,
+        on_delete = models.CASCADE,
+        related_name = 'projects_favourites'
+    )
+    date = models.DateTimeField(auto_now_add=True)

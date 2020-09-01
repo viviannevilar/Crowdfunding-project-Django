@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Project, Pledge
+from .models import Category, Project, Pledge, Favourite
 from django.utils.timezone import now
 from datetime import datetime, timedelta
 
@@ -119,3 +119,12 @@ class ProjectUserSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Project
         exclude = ['owner']
+
+
+class FavouriteSerialiser(serializers.ModelSerializer):
+    """ used by FavouriteListView """
+    date = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Favourite
+        fields = '__all__'

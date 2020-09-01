@@ -8,6 +8,7 @@ urlpatterns = [
     path('pledges/', views.PledgeList.as_view()),
     path('categories/', views.CategoryList.as_view()),
     path('categories/<str:name>/', views.CategoryDetail.as_view()),
+    path('favourites/', views.FavouriteListView.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
