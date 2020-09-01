@@ -28,11 +28,13 @@ class Project(models.Model):
     pub_date =  models.DateTimeField(null=True,blank=True)
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
+        to_field='username',
         on_delete = models.CASCADE,
         related_name = 'owner_projects',
     )
     category = models.ForeignKey(
         Category, 
+        to_field='name',
         on_delete = models.SET_DEFAULT,
         default='Other',
         related_name = 'cat_projects'
@@ -85,4 +87,7 @@ class Favourite(models.Model):
         on_delete = models.CASCADE,
         related_name = 'projects_favourites'
     )
-    date = models.DateTimeField(auto_now_add=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('owner', 'project')

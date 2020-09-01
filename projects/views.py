@@ -9,10 +9,9 @@ from .serialisers import (ProjectSerialiser,
 from .permissions import IsOwnerOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
-#from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 import django_filters
-from django_filters import rest_framework as filters
+from django_filters.rest_framework import DjangoFilterBackend
 
 #ordering is working, filters is not
 class ProjectList(generics.ListCreateAPIView):
@@ -20,9 +19,9 @@ class ProjectList(generics.ListCreateAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectSerialiser
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    filter_backends = [OrderingFilter, filters.DjangoFilterBackend,]
+    filter_backends = [OrderingFilter, DjangoFilterBackend]
     ordering_fields = ['category', 'date_created']
-    filterset_fields = ['category', 'date_created']
+    filterset_fields = ['owner','category', 'date_created']
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -161,9 +160,6 @@ class CategoryDetail(generics.RetrieveAPIView):
 #         snippet = self.get_object(pk)
 #         snippet.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-
 
 
 class FavouriteListView(generics.ListCreateAPIView):
