@@ -2,7 +2,8 @@ from rest_framework import generics, permissions, mixins, status
 from .serialisers import (
     CustomUserSerialiser, 
     UserProfileSerialiser,
-    UserDisplaySerialiser)
+    UserDisplaySerialiser,
+    UserSerialiser)
 from .permissions import IsOwnerOrReadOnly
 from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
@@ -26,16 +27,26 @@ class UserCreate(generics.CreateAPIView):
 
 
 class UserRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    """ url: '<str:username>/' 
+    maybe this should be deleted? """
+    
     queryset = User.objects.all()
-    serializer_class = CustomUserSerialiser
+    serializer_class = UserSerialiser
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
     lookup_field = 'username'
     
+    # This here is to be able to do partial update, but it seems to work without it
+    # def get_serializer(self, *args, **kwargs):
+    #     kwargs['partial'] = True
+    #     return super(UserRetrieveUpdateDestroy, self).get_serializer(*args, **kwargs)
 
 
 #need to update this so as not to have the supporter show in the pledge bit of the info about the user
 class UserProfile(generics.RetrieveAPIView):
-    """ User profile. Shows pledges and projects depending on whether the user is the owner of the account or not."""
+    """ 
+    url: '<str:username>/profile/'
+    User profile. Shows pledges and projects depending on whether the user is the owner of the account or not.
+    """
 
     queryset = User.objects.all()
     lookup_field = 'username'
@@ -64,3 +75,4 @@ class UserProfile(generics.RetrieveAPIView):
 
 
 
+# Reset Password?

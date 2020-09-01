@@ -33,7 +33,7 @@ class ProjectDetail(generics.RetrieveDestroyAPIView):
 
 
 class PledgeList(APIView):
-
+    """ url: pledges/ """
     def get(self, request):
         pledges = Pledge.objects.all()
         serializer = PledgeSerialiser(pledges, many=True)
@@ -59,7 +59,10 @@ class PledgeList(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-#this was to do the same as the above using generic views, but it is not working (the error message isn't working, but it is performing correctly)
+# this was to do the same as the above using generic views, but it is not working (the error message isn't working, but it is performing correctly)
+# maybe this will help: 
+# https://www.revsys.com/tidbits/custom-exceptions-django-rest-framework/
+
 # class PledgeList(generics.ListCreateAPIView):
 #     """ url: pledges/ """
 #     queryset = Pledge.objects.all()
@@ -69,20 +72,20 @@ class PledgeList(APIView):
 #     # def perform_create(self,serializer):
 #     #     serializer.save(supporter=self.request.user)
 
-#     #need to update this. Do I want the is_open to be a property on the serialiser or better in the model? Could also check ben's suggestion to override the save method on the model to close it after a certain amount is reached.
-#     def perform_create(self, serializer):
-#         project_pk = serializer.data['project']
-#         print(project_pk)
-#         project = Project.objects.get(pk = project_pk)
-#         print(project)
-        # print(project.is_open)
-        # if project.is_open:
-        #     serializer.save(supporter=self.request.user)
-        #     return Response(
-        #         serializer.data,
-        #          status=status.HTTP_201_CREATED
-        #     )
-        # return Response({"detail": "This project is closed"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # def perform_create(self, serializer):
+    #     project_pk = serializer.data['project']
+    #     print(project_pk)
+    #     project = Project.objects.get(pk = project_pk)
+    #     print(project)
+    #     print(project.is_open)
+    #     if project.is_open:
+    #         serializer.save(supporter=self.request.user)
+    #         return Response(
+    #             serializer.data,
+    #              status=status.HTTP_201_CREATED
+    #         )
+    #     return Response({"detail": "This project is closed"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -98,3 +101,6 @@ class CategoryDetail(generics.RetrieveAPIView):
     serializer_class = CategoryDetailSerialiser
     lookup_field = 'name'
 
+
+
+# Search?

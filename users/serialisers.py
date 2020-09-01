@@ -9,7 +9,11 @@ from projects.serialisers import (
 User = get_user_model()
 
 class CustomUserSerialiser(serializers.ModelSerializer):
-  
+    """
+    'views.UserList'
+    'views.UserCreate'
+    'views.UserRetrieveUpdateDestroy'
+    """
     class Meta:
         model = User
         fields = ('username', 'email', 'password')
@@ -32,7 +36,22 @@ class CustomUserSerialiser(serializers.ModelSerializer):
     #     user.save()
     #     return user
 
+
+class UserSerialiser(serializers.ModelSerializer):
+    """ 
+    This is so the user can create a profile, add information such as bio, pic, etc 
+    """
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'pic', 'bio', 'first_name','last_name')
+        lookup_field = 'username'
+
+        #extra_kwargs = {'password': {'write_only': True, 'min_length': 4}}
+
 class UserDisplaySerialiser(serializers.ModelSerializer):
+    """ 
+    'views.UserProfile': when request user IS NOT owner of account 
+    """
     owner_projects = ProjectUserSerialiser(many=True, read_only=True)
 
     class Meta:
@@ -41,6 +60,9 @@ class UserDisplaySerialiser(serializers.ModelSerializer):
         #lookup_field = 'username'
 
 class UserProfileSerialiser(serializers.ModelSerializer):
+    """ 
+    'views.UserProfile': when request user IS owner of account 
+    """ 
     supporter_pledges = PledgeUserSerialiser(many=True, read_only=True)
     owner_projects = ProjectUserSerialiser(many=True, read_only=True)
 

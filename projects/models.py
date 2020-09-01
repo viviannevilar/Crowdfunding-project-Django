@@ -18,7 +18,6 @@ class Category(models.Model):
         verbose_name_plural = "Categories"
 
 
-
 class Project(models.Model):
     title = models.CharField(max_length=200) 
     description = models.TextField()
@@ -45,6 +44,7 @@ class Project(models.Model):
             return False
         return (self.pub_date + timedelta(self.duration)) > now()
 
+# Check ben's suggestion to override the save method on the model to close it after a certain amount is reached.
     # You can override the save method on your model to check and update the field before saving.
     # def save(self, *args, **kwargs):
     #     if self.pledge >= self.target
@@ -52,7 +52,6 @@ class Project(models.Model):
     #     return super().save(*args, **kwargs)
 
     #https://www.django-rest-framework.org/api-guide/fields/#serializermethodfield
-
 
 
 class Pledge(models.Model):
