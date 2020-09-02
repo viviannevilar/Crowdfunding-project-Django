@@ -6,17 +6,21 @@ from .serialisers import (ProjectSerialiser,
             CategoryDetailSerialiser,
             FavouriteSerialiser
             )
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly, IsOwnerDraft
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.filters import OrderingFilter
 import django_filters
 from django_filters.rest_framework import DjangoFilterBackend
+from django.http import Http404, HttpResponseForbidden
 
-#ordering is working, filters is not
+
 class ProjectList(generics.ListCreateAPIView):
-    """ url: projects/ """
-    queryset = Project.objects.all()
+    """ 
+    Shows all published projects
+    url: projects/ 
+    """
+    queryset = Project.objects.filter(pub_date__isnull=False)
     serializer_class = ProjectSerialiser
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [OrderingFilter, DjangoFilterBackend]
@@ -27,22 +31,41 @@ class ProjectList(generics.ListCreateAPIView):
         serializer.save(owner=self.request.user)
 
 
-#need to update this so that can only see projects that are published, unless project owner
-class ProjectDetail(generics.RetrieveDestroyAPIView):
-    """ url: project/<int:pk>/ """
-    permission_classes = [
-        permissions.IsAuthenticatedOrReadOnly,
-        IsOwnerOrReadOnly]
+class OwnerProjectList(generics.ListCreateAPIView):
+    """ 
+    shows all projects (including drafts) belonging to the user making the request, allows creation of projects
+    url: myprojects/ 
+    QUESTION: do I need any extra permissions here? The filtering only shows projects from request user, but do I need to worry about someone seeing the projects from someone else?
+    """
+    serializer_class = ProjectSerialiser
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [OrderingFilter, DjangoFilterBackend]
+    ordering_fields = ['category', 'date_created']
+    filterset_fields = ['owner','category', 'date_created']
+
+    def get_queryset(self):
+        return Project.objects.filter(owner=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+
+class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
+    """ 
+    url: project/<int:pk>/
+    only owners can see drafts and delete projects
+    """
+    permission_classes = [IsOwnerDraft,]
     queryset = Project.objects.all()
     serializer_class = ProjectDetailSerialiser
 
-#class ProjectUpdate(generics.UpdateAPIView):
-    #I want people to be able to close projects
-    #and to publish them (ability to create drafts), ie, can only update a project if it has not been published
-
-
+#need to update permission here. Should only be able to add pledges to projects that aren't draft, and owner should not be able to add a pledge to own project
 class PledgeList(APIView):
-    """ url: pledges/ """
+    """ 
+    creates pledges for a given project, if the project is open
+
+    url: pledges/ """
     def get(self, request):
         pledges = Pledge.objects.all()
         serializer = PledgeSerialiser(pledges, many=True)
@@ -53,7 +76,7 @@ class PledgeList(APIView):
         if serializer.is_valid():
             project_pk = request.data['project']
             project_object = Project.objects.get(pk = project_pk)
-            print(project_object.is_open)
+            #print(project_object.is_open)
             if project_object.is_open:
                 serializer.save(supporter=self.request.user)
                 return Response(
@@ -163,7 +186,10 @@ class CategoryDetail(generics.RetrieveAPIView):
 
 
 class FavouriteListView(generics.ListCreateAPIView):
-    """ url: favourites """
+    """ 
+    shows all favourites belonging to the request user
+    url: favourites 
+    """
     serializer_class = FavouriteSerialiser
 
     def get_queryset(self):
@@ -173,12 +199,25 @@ class FavouriteListView(generics.ListCreateAPIView):
         user = self.request.user
         return Favourite.objects.filter(owner=user)
 
-    # need to ensure someone doesnt favourite a project more than once. 
 
     # Can either make a new favourite mean a removal of the favourite or just be able to remove a favourite with remove. But I like the "favourite again means remove" option
 
 
 
-# Search?
+# def FavouriteView(request,pk):
+#     post = get_object_or_404(NewsStory, id=request.POST.get('post_fav'))
+#     favourited = False
+#     if post.favourites.filter(id=request.user.id).exists():
+#         post.favourites.remove(request.user)
+#         favourited = False
+#     else:
+#         post.favourites.add(request.user)
+#         favourited = True
+#     return HttpResponseRedirect(reverse('news:story', args=[str(pk),]))
+
+
+
+
+
 
 
