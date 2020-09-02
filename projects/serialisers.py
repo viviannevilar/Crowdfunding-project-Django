@@ -9,16 +9,14 @@ class ProjectSerialiser(serializers.ModelSerializer):
     #owner = serializers.HyperlinkedRelatedField(read_only=True, view_name = 'id', lookup_field='id')
     date_created = serializers.ReadOnlyField()
     is_open = serializers.ReadOnlyField()
-    # is_open = serializers.SerializerMethodField()
+    fav_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
         fields = '__all__'
 
-    # def get_is_open(self,obj):
-    #     if obj.pub_date is None:
-    #         return False
-    #     return (obj.pub_date + timedelta(obj.duration)) > now()
+    def get_fav_count(self,obj):
+        return obj.favouriters.count()
 
 class PledgeSerialiser(serializers.ModelSerializer):
     supporter = serializers.ReadOnlyField(source='supporter.username')
@@ -128,3 +126,24 @@ class FavouriteSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Favourite
         fields = '__all__'
+
+#https://stackoverflow.com/questions/42321011/user-dependent-field-as-many-to-many-relationship-in-django-rest-framework`
+# class FavoriteField(serializers.BooleanField):
+
+#     def get_attribute(self, instance):
+#         pk = instance.pk
+#         project = Project.objects.get(pk=pk)
+#         return project.favouriters.filter(id=self.context['request'].user.id).exists()
+
+
+# class FavProductSerializer(serializers.ModelSerializer):
+#     favorite = FavoriteField()
+
+#     def update(self, instance, validated_data):
+#         instance = super().update(instance, validated_data)
+#         is_favourite = validated_data.get('favorite')  # can be None
+#         if is_favourite is True:
+#             instance.favouriters.remove(self.context['request'].user.id)
+#         elif is_favourite is False:
+#             instance.favouriters.add(self.context['request'].user.id)
+#         return instance

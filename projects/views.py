@@ -203,6 +203,36 @@ class FavouriteListView(generics.ListCreateAPIView):
     # Can either make a new favourite mean a removal of the favourite or just be able to remove a favourite with remove. But I like the "favourite again means remove" option
 
 
+class FavouriteView(APIView):
+
+    def get_object(self, pk):
+        try:
+            return Project.objects.get(pk=pk)
+        except Project.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk):
+        favourited = False
+        project = self.get_object(pk)
+        if project.favouriters.filter(id=request.user.id).exists():
+            favourited = True
+        return favourited
+
+    def post(self, request, pk):
+        project = self.get_object(pk)
+        if project.favouriters.filter(id=request.user.id).exists():
+            project.favouriters.remove(request.user)
+            favourited = False
+        else:
+            post.favourites.add(request.user)
+            favourited = True
+        
+#         serializer = SnippetSerializer(snippet, data=request.data)
+# #         if serializer.is_valid():
+# #             serializer.save()
+# #             return Response(serializer.data)
+# #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # def FavouriteView(request,pk):
 #     post = get_object_or_404(NewsStory, id=request.POST.get('post_fav'))
