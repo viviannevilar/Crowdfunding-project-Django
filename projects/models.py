@@ -35,8 +35,9 @@ class Project(models.Model):
     category = models.ForeignKey(
         Category, 
         to_field='name',
-        on_delete = models.SET_DEFAULT,
-        default='Other',
+        on_delete = models.CASCADE,
+        #on_delete = models.SET_DEFAULT,
+        #default='Other',
         related_name = 'cat_projects'
     )
     favouriters = models.ManyToManyField(
