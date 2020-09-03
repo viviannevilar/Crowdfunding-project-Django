@@ -18,7 +18,10 @@ https://stackoverflow.com/questions/43031323/how-to-create-a-new-user-with-djang
   automatically closed when the goal is reached or when the time set
   is elapsed
 
-- can update the project only if it is a draft
+- Private messages
+
+- Notifications
+
 
 - do I need to limit the number of projects I send in the categories
   view (because I will only want to show maybe 4 for each category) or
@@ -26,6 +29,7 @@ https://stackoverflow.com/questions/43031323/how-to-create-a-new-user-with-djang
 
 - users profile, user can see their own pledges (or can anybody see
 them?)
+
 - can people see a person's projects?
 
 
@@ -202,3 +206,16 @@ CategorySerialiser(data={'name': 'delete', 'description': 'testing the shell'}):
 >>> new_item.data
 {'id': 5, 'name': 'delete', 'description': 'testing the shell'}
 
+
+--------------------------------------
+### Adding favourites
+
+from projects.models import Favourite
+from projects.models import Project
+from users.models import CustomUser
+
+Favourite.objects.create(owner=CustomUser.objects.get(id=1),project=Project.objects.get(id=2))
+
+
+proj = Project.objects.get(id=2)
+proj.favouriters.all()

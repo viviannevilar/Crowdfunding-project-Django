@@ -152,45 +152,14 @@ class CategoryDetail(generics.RetrieveAPIView):
 #         return Response(serializer.data)
 
  
-
-
-
-
-# class SnippetDetail(APIView):
-#     """
-#     Retrieve, update or delete a snippet instance.
-#     """
-#     def get_object(self, pk):
-#         try:
-#             return Snippet.objects.get(pk=pk)
-#         except Snippet.DoesNotExist:
-#             raise Http404
-
-#     def get(self, request, pk, format=None):
-#         snippet = self.get_object(pk)
-#         serializer = SnippetSerializer(snippet)
-#         return Response(serializer.data)
-
-#     def put(self, request, pk, format=None):
-#         snippet = self.get_object(pk)
-#         serializer = SnippetSerializer(snippet, data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#     def delete(self, request, pk, format=None):
-#         snippet = self.get_object(pk)
-#         snippet.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
+#only person can favourite stuff to their own account
 class FavouriteListView(generics.ListCreateAPIView):
     """ 
     shows all favourites belonging to the request user
     url: favourites 
     """
     serializer_class = FavouriteSerialiser
+    permission_classes = [IsOwnerOrReadOnly]
 
     def get_queryset(self):
         """
@@ -200,10 +169,13 @@ class FavouriteListView(generics.ListCreateAPIView):
         return Favourite.objects.filter(owner=user)
 
 
-    # Can either make a new favourite mean a removal of the favourite or just be able to remove a favourite with remove. But I like the "favourite again means remove" option
-
 
 class FavouriteView(APIView):
+    """
+    See if the project (url has id of project) has been liked by current user (request.user). If yes, true, else, false.
+    If posts an empty request and the favourite doesn't exist, it will be created, otherwise it will remove it
+
+    """
 
     def get_object(self, pk):
         try:
@@ -214,9 +186,10 @@ class FavouriteView(APIView):
     def get(self, request, pk):
         favourited = False
         project = self.get_object(pk)
-        if project.favouriters.filter(id=request.user.id).exists():
+        user = request.user
+        if project.favouriters.filter(id=user.id).exists():
             favourited = True
-        return favourited
+        return Response(f"{project},{user},{favourited}")
 
     def post(self, request, pk):
         project = self.get_object(pk)
@@ -227,26 +200,6 @@ class FavouriteView(APIView):
             post.favourites.add(request.user)
             favourited = True
         
-#         serializer = SnippetSerializer(snippet, data=request.data)
-# #         if serializer.is_valid():
-# #             serializer.save()
-# #             return Response(serializer.data)
-# #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# def FavouriteView(request,pk):
-#     post = get_object_or_404(NewsStory, id=request.POST.get('post_fav'))
-#     favourited = False
-#     if post.favourites.filter(id=request.user.id).exists():
-#         post.favourites.remove(request.user)
-#         favourited = False
-#     else:
-#         post.favourites.add(request.user)
-#         favourited = True
-#     return HttpResponseRedirect(reverse('news:story', args=[str(pk),]))
-
-
-
 
 
 

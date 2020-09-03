@@ -26,11 +26,10 @@ class CustomUserSerialiser(serializers.ModelSerializer):
         #read_only_fields = ('is_active', 'is_staff', 'is_superuser',)
 
 
-    # def create(self, validated_data):
-    #     return User.objects.create(**validated_data)
-
-    
+        
     def create(self, validated_data):
+        """ ensures the password is created correctly, otherwise won't be able to login with user created, and in admin get the error "Invalid password format or unknown hashing algorithm."
+        """
         user = super(CustomUserSerialiser, self).create(validated_data)
         user.set_password(validated_data['password'])
         user.save()
