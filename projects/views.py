@@ -12,7 +12,7 @@ from rest_framework.views import APIView
 from rest_framework.filters import OrderingFilter, SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from django.http import Http404, HttpResponseForbidden
-
+from .filters import DynamicSearchFilter
 
 class ProjectList(generics.ListCreateAPIView):
     """ 
@@ -22,10 +22,11 @@ class ProjectList(generics.ListCreateAPIView):
     queryset = Project.objects.filter(pub_date__isnull=False)
     serializer_class = ProjectSerialiser
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    filter_backends = [OrderingFilter, DjangoFilterBackend,SearchFilter]
+    filter_backends = [OrderingFilter, DjangoFilterBackend, DynamicSearchFilter]#SearchFilter]
+
     ordering_fields = ['category', 'pub_date', 'goal']
     filterset_fields = ['owner','category', 'pub_date']
-    search_fields = ['description', 'title', 'owner__username', 'category__name']
+    #search_fields = ['description', 'title', 'owner__username', 'category__name']
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
