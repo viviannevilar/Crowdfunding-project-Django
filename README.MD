@@ -14,9 +14,6 @@ https://dbdiagram.io/d/5f3b46bf39081a20ae94e5c7
 Apparently this is done in the front end
 https://stackoverflow.com/questions/43031323/how-to-create-a-new-user-with-django-rest-framework-and-custom-user-model
 
-- want the is_open in projects to be set to true, and then to be
-  automatically closed when the goal is reached or when the time set
-  is elapsed
 
 - Private messages
 
@@ -32,8 +29,6 @@ them?)
 
 - can people see a person's projects?
 
-
-- create a search hability
 
 
 
@@ -219,3 +214,23 @@ Favourite.objects.create(owner=CustomUser.objects.get(id=1),project=Project.obje
 
 proj = Project.objects.get(id=2)
 proj.favouriters.all()
+
+
+-----------------------
+
+
+"""
+data = {
+    "name": "delete",
+    "description": "testing the shell"
+}
+
+new_item = CategorySerialiser(data=data)
+
+if new_item.is_valid():
+    new_item.save()
+else:
+    print(new_item.errors)
+"""
+
+-----------------------------

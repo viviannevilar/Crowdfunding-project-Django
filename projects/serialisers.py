@@ -9,6 +9,7 @@ class ProjectSerialiser(serializers.ModelSerializer):
     #owner = serializers.HyperlinkedRelatedField(read_only=True, view_name = 'id', lookup_field='id')
     date_created = serializers.ReadOnlyField()
     is_open = serializers.ReadOnlyField()
+    tot_donated = serializers.ReadOnlyField()
     fav_count = serializers.SerializerMethodField()
 
     class Meta:
@@ -28,30 +29,6 @@ class PledgeSerialiser(serializers.ModelSerializer):
         fields = '__all__'
 
  
-    # def create(self, validated_data):
-    #     """create a new pledge"""
-
-    #     supporter = validated_data['supporter.username']
-    #     amount = validated_data['amount']
-    #     comment = validated_data['comment']
-    #     anonymous = validated_data['anonymous']
-    #     project = validated_data['project']
-        
-    #     project_object = Project.objects.get(pk = project)
-    #     if project_object.is_open:
-    #         pledge = Pledge.object.create(
-    #             supporter = supporter,
-    #             amount = amount,
-    #             comment = comment,
-    #             anonymous = anonymous,
-    #             project = project
-    #         )
-    #     else:
-    #         raise serializers.ValidationError({'message': "Project is closed"})
-       
-
-
-
 class ProjectDetailSerialiser(ProjectSerialiser):
     project_pledges = PledgeSerialiser(many=True, read_only=True)
 
@@ -81,19 +58,7 @@ class CategorySerialiser(serializers.ModelSerializer):
         #     'url': {'lookup_field': 'name'}
         # }
 
-"""
-data = {
-    "name": "delete",
-    "description": "testing the shell"
-}
 
-new_item = CategorySerialiser(data=data)
-
-if new_item.is_valid():
-    new_item.save()
-else:
-    print(new_item.errors)
-"""
 
 class CategoryDetailSerialiser(CategorySerialiser):
     cat_projects = ProjectSerialiser(many=True, read_only=True)
@@ -126,6 +91,7 @@ class FavouriteSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Favourite
         fields = '__all__'
+        read_only_fields = ('owner',)
 
 #https://stackoverflow.com/questions/42321011/user-dependent-field-as-many-to-many-relationship-in-django-rest-framework`
 # class FavoriteField(serializers.BooleanField):

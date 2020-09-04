@@ -9,8 +9,7 @@ from .serialisers import (ProjectSerialiser,
 from .permissions import IsOwnerOrReadOnly, IsOwnerDraft
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.filters import OrderingFilter
-import django_filters
+from rest_framework.filters import OrderingFilter, SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from django.http import Http404, HttpResponseForbidden
 
@@ -23,9 +22,10 @@ class ProjectList(generics.ListCreateAPIView):
     queryset = Project.objects.filter(pub_date__isnull=False)
     serializer_class = ProjectSerialiser
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    filter_backends = [OrderingFilter, DjangoFilterBackend]
-    ordering_fields = ['category', 'date_created']
-    filterset_fields = ['owner','category', 'date_created']
+    filter_backends = [OrderingFilter, DjangoFilterBackend,SearchFilter]
+    ordering_fields = ['category', 'pub_date', 'goal']
+    filterset_fields = ['owner','category', 'pub_date']
+    search_fields = ['description', 'title', 'owner__username', 'category__name']
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -40,16 +40,14 @@ class OwnerProjectList(generics.ListCreateAPIView):
     serializer_class = ProjectSerialiser
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [OrderingFilter, DjangoFilterBackend]
-    ordering_fields = ['category', 'date_created']
-    filterset_fields = ['owner','category', 'date_created']
+    ordering_fields = ['goal', 'pub_date']
+    filterset_fields = ['owner','category', 'pub_date']
 
     def get_queryset(self):
         return Project.objects.filter(owner=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
-
-
 
 class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
     """ 
@@ -60,7 +58,6 @@ class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectDetailSerialiser
 
-#need to update permission here. Should only be able to add pledges to projects that aren't draft, and owner should not be able to add a pledge to own project
 class PledgeList(APIView):
     """ 
     creates pledges for a given project, if the project is open
@@ -77,12 +74,15 @@ class PledgeList(APIView):
             project_pk = request.data['project']
             project_object = Project.objects.get(pk = project_pk)
             #print(project_object.is_open)
-            if project_object.is_open:
+            if project_object.is_open and (project_object.owner != self.request.user):
                 serializer.save(supporter=self.request.user)
                 return Response(
                     serializer.data,
                     status=status.HTTP_201_CREATED
                 )
+            elif project_object.owner == self.request.user:
+                return Response({"detail": "You can't donate to your own projects!"}, status=status.HTTP_400_BAD_REQUEST
+            )
             return Response({"detail": "This project is closed"}, status=status.HTTP_400_BAD_REQUEST
             )
             
@@ -90,6 +90,9 @@ class PledgeList(APIView):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+
 
 # this was to do the same as the above using generic views, but it is not working (the error message isn't working, but it is performing correctly)
 # maybe this will help: 
@@ -134,28 +137,11 @@ class CategoryDetail(generics.RetrieveAPIView):
     lookup_field = 'name'
 
 
-# class FavouriteView(APIView):
-
-#     permission_classes = [
-#         permissions.IsAuthenticatedOrReadOnly,
-#         IsOwnerOrReadOnly]
-
-#     def get_object(self, pk):
-#         try:
-#             return Project.objects.get(pk=pk)
-#         except Project.DoesNotExist:
-#             raise Http404
-        
-#     def get(self, request, pk):
-#         project = self.get_object(pk)
-#         serializer = ProjectDetailSerialiser(project)
-#         return Response(serializer.data)
-
- 
 #only person can favourite stuff to their own account
 class FavouriteListView(generics.ListCreateAPIView):
     """ 
     shows all favourites belonging to the request user
+    if favourite exists, remove, otherwise create
     url: favourites 
     """
     serializer_class = FavouriteSerialiser
@@ -168,6 +154,17 @@ class FavouriteListView(generics.ListCreateAPIView):
         user = self.request.user
         return Favourite.objects.filter(owner=user)
 
+    def perform_create(self, serializer):
+        print(serializer.validated_data)
+        serializer.is_valid()
+        # do it first ^^^^^
+        data = serializer.validated_data
+        project = data.get('project')
+        user = self.request.user
+        if project.favouriters.filter(id=user.id).exists():
+            project.favouriters.remove(user)
+        else:
+            project.favouriters.add(user)
 
 
 class FavouriteView(APIView):
@@ -200,7 +197,4 @@ class FavouriteView(APIView):
             post.favourites.add(request.user)
             favourited = True
         
-
-
-
 

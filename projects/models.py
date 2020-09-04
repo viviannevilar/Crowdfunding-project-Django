@@ -35,7 +35,8 @@ class Project(models.Model):
     category = models.ForeignKey(
         Category, 
         to_field='name',
-        on_delete = models.CASCADE,
+        on_delete = models.SET_NULL,
+        null=True,
         #on_delete = models.SET_DEFAULT,
         #default='Other',
         related_name = 'cat_projects'
@@ -51,6 +52,12 @@ class Project(models.Model):
             return False
         return (self.pub_date + timedelta(self.duration)) > now()
 
+    @property
+    def tot_donated(self):
+        query = self.project_pledges.all()
+        return sum(pledge.amount for pledge in query)
+
+
 # Check ben's suggestion to override the save method on the model to close it after a certain amount is reached.
     # You can override the save method on your model to check and update the field before saving.
     # def save(self, *args, **kwargs):
@@ -63,7 +70,7 @@ class Project(models.Model):
 
 class Pledge(models.Model):
     amount = models.IntegerField()
-    comment = models.CharField(max_length=200)
+    comment = models.CharField(max_length=200, null=True)
     anonymous = models.BooleanField()
     date_sent = models.DateTimeField(auto_now_add=True)
     project = models.ForeignKey(
