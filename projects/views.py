@@ -93,38 +93,6 @@ class PledgeList(APIView):
         )
 
 
-
-
-# this was to do the same as the above using generic views, but it is not working (the error message isn't working, but it is performing correctly)
-# maybe this will help: 
-# https://www.revsys.com/tidbits/custom-exceptions-django-rest-framework/
-
-# class PledgeList(generics.ListCreateAPIView):
-#     """ url: pledges/ """
-#     queryset = Pledge.objects.all()
-#     serializer_class = PledgeSerialiser
-#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-#     # def perform_create(self,serializer):
-#     #     serializer.save(supporter=self.request.user)
-
-
-    # def perform_create(self, serializer):
-    #     project_pk = serializer.data['project']
-    #     print(project_pk)
-    #     project = Project.objects.get(pk = project_pk)
-    #     print(project)
-    #     print(project.is_open)
-    #     if project.is_open:
-    #         serializer.save(supporter=self.request.user)
-    #         return Response(
-    #             serializer.data,
-    #              status=status.HTTP_201_CREATED
-    #         )
-    #     return Response({"detail": "This project is closed"}, status=status.HTTP_400_BAD_REQUEST)
-
-
-
 class CategoryList(generics.ListAPIView):
     """ url: categories/ """
     queryset = Category.objects.all()
@@ -198,4 +166,44 @@ class FavouriteView(APIView):
             post.favourites.add(request.user)
             favourited = True
         
+
+
+
+
+
+
+
+
+
+
+
+
+# this was to do the same as the above using generic views, but it is not working (the error message isn't working, but it is performing correctly)
+# maybe this will help: 
+# https://www.revsys.com/tidbits/custom-exceptions-django-rest-framework/
+
+# class PledgeList(generics.ListCreateAPIView):
+#     """ url: pledges/ """
+#     queryset = Pledge.objects.all()
+#     serializer_class = PledgeSerialiser
+#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+#     # def perform_create(self,serializer):
+#     #     serializer.save(supporter=self.request.user)
+
+
+    # def perform_create(self, serializer):
+    #     project_pk = serializer.data['project']
+    #     print(project_pk)
+    #     project = Project.objects.get(pk = project_pk)
+    #     print(project)
+    #     print(project.is_open)
+    #     if project.is_open:
+    #         serializer.save(supporter=self.request.user)
+    #         return Response(
+    #             serializer.data,
+    #              status=status.HTTP_201_CREATED
+    #         )
+    #     return Response({"detail": "This project is closed"}, status=status.HTTP_400_BAD_REQUEST)
+
 
