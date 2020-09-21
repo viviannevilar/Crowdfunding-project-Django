@@ -29,6 +29,17 @@ class PledgeSerialiser(serializers.ModelSerializer):
         fields = '__all__'
 
  
+
+class PledgeProjSerialiser(serializers.ModelSerializer):
+    supporter = serializers.ReadOnlyField(source='supporter.username')
+    date_sent = serializers.ReadOnlyField()
+    #project = serializers.ReadOnlyField()
+    
+    class Meta:
+        model = Pledge
+        exclude = 'project'
+
+
 class ProjectDetailSerialiser(ProjectSerialiser):
     project_pledges = PledgeSerialiser(many=True, read_only=True)
 
