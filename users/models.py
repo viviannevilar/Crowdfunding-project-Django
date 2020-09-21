@@ -17,7 +17,7 @@ class CustomUser(AbstractUser):
 
 #     pic = models.URLField(default='https://i.imgur.com/EqUd38p.png', max_length=200)
 
-    
+    #For using pillow
 #     #pic = models.ImageField(default='default.jpg', upload_to='profile_pics')
 
 #     def __str__(self):
