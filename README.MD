@@ -10,6 +10,8 @@ https://dbdiagram.io/d/5f3b46bf39081a20ae94e5c7
 
 ## TO DO
 
+- Need way to modify project, especially to publish.
+
 - in /users/, for post (create user), want there to be 2 passwords
 Apparently this is done in the front end
 https://stackoverflow.com/questions/43031323/how-to-create-a-new-user-with-django-rest-framework-and-custom-user-model
@@ -216,118 +218,7 @@ proj = Project.objects.get(id=2)
 proj.favouriters.all()
 
 
------------------------
 
-# Introduction
-
-(Picture of anita borg)
-
-When I first did a google search about Anita Borg I was a disappointed because she hadn't developed a cool game I could show, nor did she have any cool pictures I could find, like the one Gab showed and did a quiz on.
-
-As I researched more I understood the importance of her work and why she absolutely deserves a spot amongst all the amazing women we got to talk about. Because although she was highly respected as a computer scientist, her biggest mark was as a champion and mentor of women in the tech world. She founded several initiatives for women in tech and became virtually synonymous with involving women in tech.
-
-But to be honest with you guys, even after reading this I wasn't super excited about her until I read about her life and her as a person, and this is what I am going to talk about. Then Teagen is going to talk about her initiatives to get women in the field of tech.
-
-
-# Life/work
-
-(slide with main points)
-
-She was born in Chicago in 1949, and died of brain cancer in 2003 (she was 54).
-
-As a child, she grew up and traveled with her family all over the US, including a year camping across the country when she was 9 and then Hawaii for a year.
-
-The attitude of her parents about life was always that you should have a good time and they could do anything they wanted, and if it didn't work out, well, what the heck?
-
-She atributes her love of math to her mother: whenever her mother would help Anita with her homework, she approached it with curiosity, like math was a fun puzzles, and there was no sense of fear.
-
-Anita did 2 years of college studying mostly maths, but she quit her studies to support her husband through college.
-
-The first job she got was with Fortran. She did the training part, then over the long weekend she went to Woodstock. When she came back, she was sick for six weeks and lost the job.
-
-The next job was as a clerk a small insurance company. She was about 20 then. She taught herself COBOL and ended up doing programming jobs for them.
-
-About that time she got divorced, and she quit her job and went back to school.
-
-She decided to major in computer science, because she believed maths was not going to give her a way to support herself, but computer science was.
-
-Her plan was to just finish her undergrad. "At that time I was living with a lawyer, and our plan was: we were going to hop in our van with our two big motorcycles, and we were going to move to Oregon. He was going to be a hippie lawyer, and I was going to be a hippie programmer, and we were going to have hippie babies and grow pot in the backyard."
-
-She ended up getting into the graduate program at NYU and finished her PhD in 8 years because she had her dad's attitute about life, which was: she told them really clearly that graduate school was a five-days-a-week, eight-hours-a-day job, and she was going to go have fun on the weekends. She was going to go ride motorcycles, paddle kayaks and all the other stuff that she does. She had a relationship and a life.
-
-Her thesis was about synchronisation mechanisms in operating systems. She went to work for Auragen building a fault-tolerant operating system. This company went burst and Nixdorf took the technology and hired Anita (the only out of her team) to go to Germany for a year to help them finish up the  fault-tolerance part, because that had been her baby.
-
-She got a paper out of this work back when she was still at Auragen and she presented a few times and eventually in California, where she got a job at DEC to work on operating systems but eventually worked on performance analysis of memory systems.
-
-It was while she was a DEC that she created Systers and subsequently her other initiatives for women in tech, and Teagen will talk about these to you.
-
-
-
-# Quotes
-
-"I think that it’s important not to pay too much attention to the stereotype that you somehow have to be one of these geeky guys, which is completely ridiculous. Not everybody’s like that; most people aren’t like that. [...] The stereotype is just a stereotype, it’s not reality; and you shouldn’t let that hinder you."
-
-
-
-
-# Alternative quote (not using this one, maybe you want it?)
-
-"It’s not always going to be easy. But if you enjoy it, there’s a whole lot of fun; there’s a whole lot of pleasure. And there are great things to be done. It’s hard, sometimes, to see: the way computing and technology are often taught, we lose the connection with the impact of what we’re creating. It’s a really good idea to think about all the incredible things that could be done with all of this, if you care about that; because sometimes people won’t talk about it, and it’s really important. And if that will carry you through, then hang on to it."
-# Introduction
-
-(Picture of anita borg)
-
-When I first did a google search about Anita Borg I was a disappointed because she hadn't developed a cool game I could show, nor did she have any cool pictures I could find, like the one Gab showed and did a quiz on.
-
-As I researched more I understood the importance of her work and why she absolutely deserves a spot amongst all the amazing women we got to talk about. Because although she was highly respected as a computer scientist, her biggest mark was as a champion and mentor of women in the tech world. She founded several initiatives for women in tech and became virtually synonymous with involving women in tech.
-
-But to be honest with you guys, even after reading this I wasn't super excited about her until I read about her life and her as a person, and this is what I am going to talk about. Then Teagen is going to talk about her initiatives to get women in the field of tech.
-
-
-# Life/work
-
-(slide with main points)
-
-She was born in Chicago in 1949, and died of brain cancer in 2003 (she was 54).
-
-As a child, she grew up and traveled with her family all over the US, including a year camping across the country when she was 9 and then Hawaii for a year.
-
-The attitude of her parents about life was always that you should have a good time and they could do anything they wanted, and if it didn't work out, well, what the heck?
-
-She atributes her love of math to her mother: whenever her mother would help Anita with her homework, she approached it with curiosity, like math was a fun puzzles, and there was no sense of fear.
-
-Anita did 2 years of college studying mostly maths, but she quit her studies to support her husband through college.
-
-The first job she got was with Fortran. She did the training part, then over the long weekend she went to Woodstock. When she came back, she was sick for six weeks and lost the job.
-
-The next job was as a clerk a small insurance company. She was about 20 then. She taught herself COBOL and ended up doing programming jobs for them.
-
-About that time she got divorced, and she quit her job and went back to school.
-
-She decided to major in computer science, because she believed maths was not going to give her a way to support herself, but computer science was.
-
-Her plan was to just finish her undergrad. "At that time I was living with a lawyer, and our plan was: we were going to hop in our van with our two big motorcycles, and we were going to move to Oregon. He was going to be a hippie lawyer, and I was going to be a hippie programmer, and we were going to have hippie babies and grow pot in the backyard."
-
-She ended up getting into the graduate program at NYU and finished her PhD in 8 years because she had her dad's attitute about life, which was: she told them really clearly that graduate school was a five-days-a-week, eight-hours-a-day job, and she was going to go have fun on the weekends. She was going to go ride motorcycles, paddle kayaks and all the other stuff that she does. She had a relationship and a life.
-
-Her thesis was about synchronisation mechanisms in operating systems. She went to work for Auragen building a fault-tolerant operating system. This company went burst and Nixdorf took the technology and hired Anita (the only out of her team) to go to Germany for a year to help them finish up the  fault-tolerance part, because that had been her baby.
-
-She got a paper out of this work back when she was still at Auragen and she presented a few times and eventually in California, where she got a job at DEC to work on operating systems but eventually worked on performance analysis of memory systems.
-
-It was while she was a DEC that she created Systers and subsequently her other initiatives for women in tech, and Teagen will talk about these to you.
-
-
-
-# Quotes
-
-"I think that it’s important not to pay too much attention to the stereotype that you somehow have to be one of these geeky guys, which is completely ridiculous. Not everybody’s like that; most people aren’t like that. [...] The stereotype is just a stereotype, it’s not reality; and you shouldn’t let that hinder you."
-
-
-
-
-# Alternative quote (not using this one, maybe you want it?)
-
-"It’s not always going to be easy. But if you enjoy it, there’s a whole lot of fun; there’s a whole lot of pleasure. And there are great things to be done. It’s hard, sometimes, to see: the way computing and technology are often taught, we lose the connection with the impact of what we’re creating. It’s a really good idea to think about all the incredible things that could be done with all of this, if you care about that; because sometimes people won’t talk about it, and it’s really important. And if that will carry you through, then hang on to it."
 
 """
 data = {
