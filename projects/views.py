@@ -2,6 +2,7 @@ from rest_framework import generics, permissions, mixins, status
 from .models import Project, Pledge, Category, Favourite
 from .serialisers import (ProjectSerialiser, 
             ProjectDetailSerialiser,
+            ProjectPublishSerialiser,
             PledgeSerialiser,
             CategoryDetailSerialiser,
             FavouriteSerialiser
@@ -13,6 +14,9 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from django.http import Http404, HttpResponseForbidden
 from .filters import DynamicSearchFilter
+from django.utils import timezone
+
+
 
 class ProjectList(generics.ListCreateAPIView):
     """ 
@@ -58,6 +62,53 @@ class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsOwnerDraft,]
     queryset = Project.objects.all()
     serializer_class = ProjectDetailSerialiser
+
+
+
+
+
+# class ProjectPublishSet(viewsets.ModelViewSet):
+#     """
+#     A viewset that provides the standard actions
+#     """
+#     queryset = Project.objects.all()
+#     serializer_class = ProjectPublishSerialiser
+
+
+#     @action(detail=True, methods=['post'])
+#     def set_pub_date(self, request, pk=None):
+#         project = self.get_object()
+#         serializer = ProjectPublishSerialiser(data=request.data)
+#         if serializer.is_valid():
+#             project.pub_date = timezone.now()]
+#             project.save()
+#             return Response({'status': 'project published'})
+#         else:
+#             return Response(serializer.errors,
+#                             status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProjectPublish(APIView):
+    "publish project"
+    permission_classes = [IsOwnerDraft,]
+    queryset = Project.objects.all()
+    # serializer_class = ProjectPublishSerialiser
+
+    def get_object(self, pk):
+        try:
+            return Project.objects.get(pk=pk)
+        except Project.DoesNotExist:
+            raise Http404
+
+    def post(self, request, pk):
+        project = self.get_object(pk)
+        self.check_object_permissions(request, project)        
+        data = request.data
+        project.pub_date = timezone.now()
+        project.save()
+        return Response({'status': 'project published'})
+
+
 
 class PledgeList(APIView):
     """ 

@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Category, Project, Pledge, Favourite
 from django.utils.timezone import now
 from datetime import datetime, timedelta
+from django.utils import timezone
 
 class ProjectSerialiser(serializers.ModelSerializer):
     #owner = serializers.ReadOnlyField(source='owner.id')
@@ -28,7 +29,6 @@ class PledgeSerialiser(serializers.ModelSerializer):
         model = Pledge
         fields = '__all__'
 
- 
 
 class PledgeProjSerialiser(serializers.ModelSerializer):
     supporter = serializers.ReadOnlyField(source='supporter.username')
@@ -43,6 +43,24 @@ class PledgeProjSerialiser(serializers.ModelSerializer):
 class ProjectDetailSerialiser(ProjectSerialiser):
     project_pledges = PledgeSerialiser(many=True, read_only=True)
 
+# class AddStoryView(LoginRequiredMixin,generic.CreateView):
+#     form_class = StoryForm
+#     context_object_name = 'storyForm'
+#     template_name = 'news/createStory.html'
+#     success_url = reverse_lazy('news:index')
+
+#     def form_valid(self,form):
+#         form.instance.author = self.request.user
+#         if '_publish' in self.request.POST:
+#             form.instance.pub_date = timezone.now()
+#             #form.save()        
+#         return super(AddStoryView, self).form_valid(form)
+
+class ProjectPublishSerialiser(serializers.ModelSerializer):
+
+    class Meta:
+        model = Project
+        fields = "pub_date"
 
 
 #from django.utils.text import slugify
