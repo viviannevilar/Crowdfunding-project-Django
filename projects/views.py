@@ -5,6 +5,7 @@ from .serialisers import (ProjectSerialiser,
             ProjectPublishSerialiser,
             PledgeSerialiser,
             CategoryDetailSerialiser,
+            CategorySerialiser,
             FavouriteSerialiser
             )
 from .permissions import IsOwnerOrReadOnly, IsOwnerDraft
@@ -147,7 +148,7 @@ class PledgeList(APIView):
 class CategoryList(generics.ListAPIView):
     """ url: categories/ """
     queryset = Category.objects.all()
-    serializer_class = CategoryDetailSerialiser
+    serializer_class = CategorySerialiser
 
 
 class CategoryDetail(generics.RetrieveAPIView):
