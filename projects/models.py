@@ -84,6 +84,9 @@ class Pledge(models.Model):
         related_name = 'supporter_pledges'
     )
 
+    def project_owner(self):
+        return self.project.owner
+
 class Favourite(models.Model):
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,

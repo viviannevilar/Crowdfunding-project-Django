@@ -8,7 +8,7 @@ class ProjectAdmin(admin.ModelAdmin):
 
 class PledgeAdmin(admin.ModelAdmin):
     model = Pledge
-    list_display = ['id','supporter', 'date_sent']
+    list_display = ['id','supporter', 'project', 'date_sent', 'project_owner']
 
 admin.site.register(Project,ProjectAdmin)
 admin.site.register(Category)
