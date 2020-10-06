@@ -13,7 +13,7 @@ urlpatterns = [
     path('category/<str:name>/', views.CategoryDetail.as_view()),
     path('favourites/', views.FavouriteListView.as_view()),
     path('project/<int:pk>/favourite/', views.FavouriteView.as_view()),
-    path('project/<int:pk>/publish', views.ProjectPublish.as_view())
+    path('project/<int:pk>/publish/', views.ProjectPublish.as_view())
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
