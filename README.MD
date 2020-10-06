@@ -100,6 +100,7 @@ From now on can use :
 
 $ git push origin
 
+$ git push heroku master
 
 ### Apps
 

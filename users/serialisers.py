@@ -45,6 +45,7 @@ class UserSerialiser(serializers.ModelSerializer):
         fields = ('username', 'email', 'pic', 'bio', 'first_name','last_name')
         lookup_field = 'username'
 
+        read_only_fields = ('username',)
         #extra_kwargs = {'password': {'write_only': True, 'min_length': 4}}
 
 class UserDisplaySerialiser(serializers.ModelSerializer):

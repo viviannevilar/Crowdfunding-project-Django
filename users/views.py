@@ -27,8 +27,7 @@ class UserCreate(generics.CreateAPIView):
 
 
 class UserRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
-    """ url: '<str:username>/' 
-    maybe this should be deleted? """
+    """ url: '<str:username>/' """
     
     queryset = User.objects.all()
     serializer_class = UserSerialiser
