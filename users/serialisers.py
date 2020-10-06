@@ -56,7 +56,7 @@ class UserDisplaySerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'date_joined', 'last_login', 'owner_projects', 'bio', 'first_name', 'last_name'] 
+        fields = ['username', 'date_joined', 'last_login', 'owner_projects', 'bio', 'first_name', 'last_name', 'pic'] 
         #lookup_field = 'username'
 
 class UserProfileSerialiser(serializers.ModelSerializer):
@@ -68,7 +68,7 @@ class UserProfileSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'date_joined', 'last_login', 'owner_projects', 'supporter_pledges', 'bio', 'email', 'first_name', 'last_name']
+        fields = ['username', 'date_joined', 'last_login', 'owner_projects', 'supporter_pledges', 'bio', 'email', 'first_name', 'last_name', 'pic']
         #lookup_field = 'username'
 
   
