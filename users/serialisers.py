@@ -19,14 +19,10 @@ class CustomUserSerialiser(serializers.ModelSerializer):
         fields = ('username', 'email', 'password')
         lookup_field = 'username'
 
-        # These fields are only editable (not displayed) and have to be a part of 'fields' tuple
+        # Write only field
         extra_kwargs = {'password': {'write_only': True, 'min_length': 4}}
 
-        # These fields are displayed but not editable and have to be a part of 'fields' tuple
-        #read_only_fields = ('is_active', 'is_staff', 'is_superuser',)
 
-
-        
     def create(self, validated_data):
         """ ensures the password is created correctly, otherwise won't be able to login with user created, and in admin get the error "Invalid password format or unknown hashing algorithm."
         """
@@ -46,7 +42,7 @@ class UserSerialiser(serializers.ModelSerializer):
         lookup_field = 'username'
 
         read_only_fields = ('username',)
-        #extra_kwargs = {'password': {'write_only': True, 'min_length': 4}}
+
 
 class UserDisplaySerialiser(serializers.ModelSerializer):
     """ 
@@ -57,7 +53,7 @@ class UserDisplaySerialiser(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'date_joined', 'last_login', 'owner_projects', 'bio', 'first_name', 'last_name', 'pic'] 
-        #lookup_field = 'username'
+
 
 class UserProfileSerialiser(serializers.ModelSerializer):
     """ 
@@ -69,12 +65,3 @@ class UserProfileSerialiser(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'date_joined', 'last_login', 'owner_projects', 'supporter_pledges', 'bio', 'email', 'first_name', 'last_name', 'pic']
-        #lookup_field = 'username'
-
-  
-
-
-#    def get_queryset(self):
-#         if self.request.user.is_superuser:
-#             return FooModel.objects.all()
-#         return FooModel.objects.filter(owner=self.request.user)

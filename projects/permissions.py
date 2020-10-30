@@ -10,8 +10,8 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
 class IsOwnerDraft(permissions.BasePermission):
     """
-    everyone can see published projects.
-    non authors cannot see or change drafts.
+    everyone can see published projects (safe method)
+    non authors cannot see or change drafts (not pub).
     authors can see and change drafts, cannot change published projects.
 
     author      pub         safe            True
@@ -35,17 +35,5 @@ class IsOwnerDraft(permissions.BasePermission):
         message = 'Published projects cannot be changed.'
         return False
 
-
-
-
-# class IsOwnerDraft(permissions.BasePermission):
-#     message = 'This project has not been published yet. Only owners can see draft projects.'
-
-#     def has_object_permission(self, request, view, obj):
-#         if request.user == obj.owner:
-#             return True
-#         elif obj.pub_date == None:
-#             return False
-#         return True
 
  

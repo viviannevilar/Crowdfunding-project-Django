@@ -18,7 +18,6 @@ from .filters import DynamicSearchFilter
 from django.utils import timezone
 
 
-
 class ProjectList(generics.ListCreateAPIView):
     """ 
     Shows all published projects
@@ -27,7 +26,7 @@ class ProjectList(generics.ListCreateAPIView):
     queryset = Project.objects.filter(pub_date__isnull=False)
     serializer_class = ProjectSerialiser
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    filter_backends = [OrderingFilter, DjangoFilterBackend, DynamicSearchFilter]#SearchFilter]
+    filter_backends = [OrderingFilter, DjangoFilterBackend, DynamicSearchFilter]
 
     ordering_fields = ['category', 'pub_date', 'goal']
     filterset_fields = ['owner','category', 'pub_date']
@@ -41,7 +40,7 @@ class OwnerProjectList(generics.ListCreateAPIView):
     """ 
     shows all projects (including drafts) belonging to the user making the request, allows creation of projects
     url: myprojects/ 
-    QUESTION: do I need any extra permissions here? The filtering only shows projects from request user, but do I need to worry about someone seeing the projects from someone else?
+    TO DO: Would probably be good to check permissions. The filtering only shows projects from request user, but do I need to worry about someone seeing the projects from someone else?
     """
     serializer_class = ProjectSerialiser
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -65,35 +64,10 @@ class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProjectDetailSerialiser
 
 
-
-
-
-# class ProjectPublishSet(viewsets.ModelViewSet):
-#     """
-#     A viewset that provides the standard actions
-#     """
-#     queryset = Project.objects.all()
-#     serializer_class = ProjectPublishSerialiser
-
-
-#     @action(detail=True, methods=['post'])
-#     def set_pub_date(self, request, pk=None):
-#         project = self.get_object()
-#         serializer = ProjectPublishSerialiser(data=request.data)
-#         if serializer.is_valid():
-#             project.pub_date = timezone.now()]
-#             project.save()
-#             return Response({'status': 'project published'})
-#         else:
-#             return Response(serializer.errors,
-#                             status=status.HTTP_400_BAD_REQUEST)
-
-
 class ProjectPublish(APIView):
     "publish project"
     permission_classes = [IsOwnerDraft,]
     queryset = Project.objects.all()
-    # serializer_class = ProjectPublishSerialiser
 
     def get_object(self, pk):
         try:
@@ -108,7 +82,6 @@ class ProjectPublish(APIView):
         project.pub_date = timezone.now()
         project.save()
         return Response({'status': 'project published'})
-
 
 
 class PledgeList(APIView):
@@ -178,7 +151,6 @@ class FavouriteListView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         print(serializer.validated_data)
         serializer.is_valid()
-        # do it first ^^^^^
         data = serializer.validated_data
         project = data.get('project')
         user = self.request.user
@@ -218,44 +190,3 @@ class FavouriteView(APIView):
             post.favourites.add(request.user)
             favourited = True
         
-
-
-
-
-
-
-
-
-
-
-
-
-# this was to do the same as the above using generic views, but it is not working (the error message isn't working, but it is performing correctly)
-# maybe this will help: 
-# https://www.revsys.com/tidbits/custom-exceptions-django-rest-framework/
-
-# class PledgeList(generics.ListCreateAPIView):
-#     """ url: pledges/ """
-#     queryset = Pledge.objects.all()
-#     serializer_class = PledgeSerialiser
-#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-#     # def perform_create(self,serializer):
-#     #     serializer.save(supporter=self.request.user)
-
-
-    # def perform_create(self, serializer):
-    #     project_pk = serializer.data['project']
-    #     print(project_pk)
-    #     project = Project.objects.get(pk = project_pk)
-    #     print(project)
-    #     print(project.is_open)
-    #     if project.is_open:
-    #         serializer.save(supporter=self.request.user)
-    #         return Response(
-    #             serializer.data,
-    #              status=status.HTTP_201_CREATED
-    #         )
-    #     return Response({"detail": "This project is closed"}, status=status.HTTP_400_BAD_REQUEST)
-
-

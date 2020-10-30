@@ -58,16 +58,6 @@ class Project(models.Model):
         return sum(pledge.amount for pledge in query)
 
 
-# Check ben's suggestion to override the save method on the model to close it after a certain amount is reached.
-    # You can override the save method on your model to check and update the field before saving.
-    # def save(self, *args, **kwargs):
-    #     if self.pledge >= self.target
-    #     self.complete=True
-    #     return super().save(*args, **kwargs)
-
-    #https://www.django-rest-framework.org/api-guide/fields/#serializermethodfield
-
-
 class Pledge(models.Model):
     amount = models.IntegerField()
     comment = models.CharField(max_length=200, null=True)
@@ -86,6 +76,7 @@ class Pledge(models.Model):
 
     def project_owner(self):
         return self.project.owner
+
 
 class Favourite(models.Model):
     owner = models.ForeignKey(
